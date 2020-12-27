@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.dao.StudentMapper">
+    <select id="getStudentsWithTeacher" resultMap="studentWithTeacher">
+        select *
+        from mybatis.student
+    </select>
+
+    <select id="getTeacher" parameterType="_int" resultType="teacher">
+        select *
+        from mybatis.teacher
+        where id = #{id}
+    </select>
+
+    <resultMap id="studentWithTeacher" type="student">
+        <!--
+            复杂的情况需要单独处理，方式一
+            对象：association
+            集合：collection
+            类似于嵌套查询，根据查询出来的学生ID，再去查询对应的老师
+        -->
+        <association property="teacher" column="tid" javaType="teacher" select="getTeacher"/>
+    </resultMap>
+
+
+    <select id="getStudentsWithTeacher2" resultMap="studentWithTeacher2">
+        select s.id sid, s.name sname, t.name tname
+        from mybatis.teacher t,
+             mybatis.student s
+        where s.tid = t.id
+    </select>
+
+    <resultMap id="studentWithTeacher2" type="student">
+        <!--更加直观，写好SQL后只用调整查询结果的关系-->
+        <result property="id" column="sid"/>
+        <result property="name" column="sname"/>
+        <association property="teacher" javaType="teacher">
+            <result property="name" column="tname"/>
+        </association>
+    </resultMap>
+</mapper>

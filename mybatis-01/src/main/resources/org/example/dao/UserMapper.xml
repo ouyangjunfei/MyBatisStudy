@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--namespace绑定一个对应的Dao/Mapper接口-->
+<mapper namespace="org.example.dao.UserMapper">
+    <select id="getUserList" resultType="org.example.pojo.User">
+        select *
+        from mybatis.user
+    </select>
+
+    <select id="getUserById" parameterType="int" resultType="org.example.pojo.User">
+        select *
+        from mybatis.user
+        where id = #{id}
+    </select>
+
+    <select id="getUserByMap" parameterType="map" resultType="org.example.pojo.User">
+        select *
+        from mybatis.user
+        where id = #{id}
+          and name = #{name}
+    </select>
+
+    <!--对象中的属性可以直接取出来-->
+    <insert id="addUser" parameterType="org.example.pojo.User" useGeneratedKeys="true" keyProperty="id">
+        insert into mybatis.user (name, pwd)
+        values (#{name}, #{pwd})
+    </insert>
+
+    <insert id="addUserByMap" parameterType="map">
+        insert into mybatis.user (name, pwd)
+        values (#{name}, #{pwd})
+    </insert>
+
+    <update id="updateUser" parameterType="map">
+        update mybatis.user
+        set name = #{name},
+            pwd  = #{pwd}
+        where id = #{id}
+    </update>
+
+    <delete id="deleteUser" parameterType="int">
+        delete
+        from mybatis.user
+        where id = #{id}
+    </delete>
+
+    <select id="getUserLike" resultType="org.example.pojo.User">
+        select *
+        from mybatis.user
+#         安全写法，防止SQL注入
+        where name like concat('%', #{value}, '%')
+    </select>
+
+</mapper>

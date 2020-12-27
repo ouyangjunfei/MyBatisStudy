@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.dao.TeacherMapper">
+
+    <resultMap id="teacherWithStudents" type="teacher">
+        <result property="id" column="tid"/>
+        <result property="name" column="tname"/>
+        <!--集合用collection
+        javaType指定属性的类型
+        集合中的泛型信息，使用ofType获取-->
+        <collection property="students" ofType="student">
+            <result property="id" column="sid"/>
+            <result property="name" column="sname"/>
+            <result property="tid" column="tid"/>
+        </collection>
+    </resultMap>
+
+    <select id="getTeacherWithStudents" parameterType="_int" resultMap="teacherWithStudents">
+        select t.id tid, t.name tname, s.id sid, s.name sname
+        from mybatis.student s,
+             mybatis.teacher t
+        where t.id = #{id}
+          and s.tid = t.id
+    </select>
+</mapper>
